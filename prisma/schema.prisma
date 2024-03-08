@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  Kasir
+  Admin
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique @db.VarChar(200)
+  name        String        @db.VarChar(255)
+  password    String        @db.VarChar(255)
+  role        Role
+  category    Category[]
+  books       Books[]
+  transaction Transaction[]
+
+  @@map("users")
+}
+
+model Category {
+  id     Int     @id @default(autoincrement())
+  name   String  @db.VarChar(255)
+  userId Int     @db.Int
+  users  User    @relation(fields: [userId], references: [id])
+  books  Books[]
+
+  @@map("categories")
+}
+
+model Books {
+  id                Int                 @id @default(autoincrement())
+  categoryId        Int                 @db.Int
+  category          Category            @relation(fields: [categoryId], references: [id])
+  userId            Int                 @db.Int
+  users             User                @relation(fields: [userId], references: [id])
+  title             String              @db.VarChar(255)
+  author            String              @db.VarChar(255)
+  image             String              @db.Text
+  published         DateTime            @db.DateTime
+  price             Int                 @db.Int
+  stock             Int                 @db.Int
+  transactionDetail TransactionDetail[]
+
+  @@map("books")
+}
+
+model Transaction {
+  id                Int                 @id @default(autoincrement())
+  userId            Int                 @db.Int
+  users             User                @relation(fields: [userId], references: [id])
+  invoice           String              @db.VarChar(255)
+  date              DateTime            @db.DateTime
+  transactionDetail TransactionDetail[]
+
+  @@map("transactions")
+}
+
+model TransactionDetail {
+  id            Int         @id @default(autoincrement())
+  transactionId Int         @db.Int
+  transaction   Transaction @relation(fields: [transactionId], references: [id])
+  bookId        Int         @db.Int
+  books         Books       @relation(fields: [bookId], references: [id])
+  titleBook     String      @db.VarChar(255)
+  authorBook    String      @db.VarChar(255)
+  imageBook     String      @db.Text
+  priceBook     Int         @db.Int
+  quantity      Int         @db.Int
+
+  @@map("transaction_details")
+}
