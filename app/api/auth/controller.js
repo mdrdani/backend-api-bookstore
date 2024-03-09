@@ -1,5 +1,6 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 const prismaClient = new PrismaClient();
 
@@ -17,7 +18,17 @@ module.exports = {
         const checkPassword = bcrypt.compareSync(password, checkUser.password);
 
         if (checkPassword) {
-          res.status(200).json({ message: 'Success Signin' });
+          const token = jwt.sign(
+            {
+              user: {
+                id: checkUser.id,
+                name: checkUser.name,
+                email: checkUser.email,
+              },
+            },
+            'secret'
+          );
+          res.status(200).json({ message: 'Success Signin', data: token });
         } else {
           res.status(403).json({ message: 'Password not match' });
         }
