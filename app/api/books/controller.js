@@ -135,4 +135,32 @@ module.exports = {
       next(err);
     }
   },
+
+  deleteBooks: async (req, res, next) => {
+    try {
+      let user = req.user.id;
+      const { id } = req.params;
+
+      const checkBook = await prismaClient.books.findUnique({
+        where: {
+          id: parseInt(id),
+          userId: user,
+        },
+      });
+
+      if (!checkBook) {
+        return res.status(404).json({ message: 'Book not found' });
+      }
+
+      await prismaClient.books.delete({
+        where: {
+          id: parseInt(id),
+        },
+      });
+
+      res.status(200).json({ message: 'Success delete book' });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
