@@ -46,4 +46,40 @@ module.exports = {
       next(error);
     }
   },
+
+  createBooks: async (req, res, next) => {
+    try {
+      let user = req.user.id;
+      const { title, price, categoryId, author, published, stock, image } =
+        req.body;
+
+      const checkCategory = await prismaClient.category.findUnique({
+        where: {
+          id: categoryId,
+          userId: user,
+        },
+      });
+
+      if (!checkCategory) {
+        return res.status(404).json({ message: 'Category not found' });
+      }
+
+      const book = await prismaClient.books.create({
+        data: {
+          title,
+          price,
+          categoryId,
+          author,
+          published,
+          stock,
+          image,
+          userId: user,
+        },
+      });
+
+      res.status(201).json({ message: 'Success create book', data: book });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
