@@ -26,6 +26,13 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-const uploadMiddleware = multer({ storage: storage, fileFilter: fileFilter });
+const uploadMiddleware = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  // limit size image
+  limits: {
+    fileSize: 1024 * 1024 * 5, // 5MB
+  },
+});
 
 module.exports = uploadMiddleware;
