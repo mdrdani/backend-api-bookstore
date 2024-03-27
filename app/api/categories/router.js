@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { auth } = require('../../middleware/auth.js');
+const { authorize } = require('../../middleware/authorize.js');
 const {
   getAllCategories,
   createCategories,
@@ -9,9 +10,9 @@ const {
 } = require('./controller.js');
 
 /* GET home page. */
-router.get('/categories', auth, getAllCategories);
-router.post('/categories', auth, createCategories);
-router.put('/categories/:id', auth, updateCategories);
-router.delete('/categories/:id', auth, deleteCategories);
+router.get('/categories', auth, authorize, getAllCategories);
+router.post('/categories', auth, authorize, createCategories);
+router.put('/categories/:id', auth, authorize, updateCategories);
+router.delete('/categories/:id', auth, authorize, deleteCategories);
 
 module.exports = router;

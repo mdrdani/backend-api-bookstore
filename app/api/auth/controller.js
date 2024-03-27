@@ -25,9 +25,11 @@ module.exports = {
                 id: checkUser.id,
                 name: checkUser.name,
                 email: checkUser.email,
+                role: checkUser.role,
               },
             },
-            'secret'
+            'secret',
+            { expiresIn: '12h' }
           );
           res.status(200).json({ message: 'Success Signin', data: token });
         } else {
@@ -75,4 +77,12 @@ module.exports = {
     }
   },
   // end
+
+  signout: async (req, res, next) => {
+    try {
+      res.status(200).json({ message: 'Signout successful' });
+    } catch (err) {
+      next(err);
+    }
+  },
 };
