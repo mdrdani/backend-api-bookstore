@@ -5,11 +5,7 @@ const prismaClient = new PrismaClient();
 module.exports = {
   getAllCategories: async (req, res, next) => {
     try {
-      const categories = await prismaClient.category.findMany({
-        where: {
-          userId: req.user.id,
-        },
-      });
+      const categories = await prismaClient.category.findMany();
       res
         .status(200)
         .json({ message: 'Success get all categories', data: categories });

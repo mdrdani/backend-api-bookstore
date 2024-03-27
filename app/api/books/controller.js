@@ -10,7 +10,6 @@ module.exports = {
       if (keyword && categoryId) {
         const books = await prismaClient.books.findMany({
           where: {
-            userId: req.user.id,
             title: {
               contains: keyword,
             },
@@ -30,7 +29,6 @@ module.exports = {
       } else if (keyword) {
         const books = await prismaClient.books.findMany({
           where: {
-            userId: req.user.id,
             title: {
               contains: keyword,
             },
@@ -49,7 +47,6 @@ module.exports = {
       } else if (categoryId) {
         const books = await prismaClient.books.findMany({
           where: {
-            userId: req.user.id,
             categoryId: parseInt(categoryId),
           },
           include: {
@@ -65,9 +62,6 @@ module.exports = {
           .json({ message: 'Success get search books', data: books });
       } else {
         const books = await prismaClient.books.findMany({
-          where: {
-            userId: req.user.id,
-          },
           include: {
             category: {
               select: {
